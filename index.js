@@ -6,8 +6,10 @@ const app = express();
 const port = parseInt(process.env.PORT) || process.argv[3] || 8080;
 
 app.use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs');
+
+app.set('views', path.join(__dirname, 'views'))
+
+app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
   res.render('index');

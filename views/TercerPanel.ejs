@@ -1,11 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/public/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>TercerPanel</title>
 </head>
+
 <body>
-    <h2>Conponente 3</h2>
+    <h2 id="TitelR">Reproductor.</h2>
+    <div class="player">
+        <input type="file" id="fileInput" accept="audio/*" multiple>
+        <ul id="playlist"></ul>
+        <ul id="playlist"></ul>
+        <audio id="audioPlayer" controls></audio>
+    </div>
 </body>
+<script>
+    const audioPlayer = document.getElementById('audioPlayer');
+    const fileInput = document.getElementById('fileInput');
+    const playlist = document.getElementById('playlist');
+
+    let songs = [];
+    let currentSongIndex = 0;
+
+    // Cargar archivos seleccionados
+    fileInput.addEventListener('change', (event) => {
+        const files = event.target.files;
+        songs = Array.from(files);
+        updatePlaylist();
+        playSong(0);  // Reproduce la primera canción de la lista
+    });
+
+    // Actualizar la lista de reproducción
+    function updatePlaylist() {
+        playlist.innerHTML = '';
+        songs.forEach((song, index) => {
+            const li = document.createElement('p');
+            li.textContent = song.name;
+            li.addEventListener('click', () => playSong(index));
+            playlist.appendChild(li);
+        });
+        highlightActiveSong();
+    }
+
+    // Reproducir canción
+    function playSong(index) {
+        currentSongIndex = index;
+        const song = songs[index];
+        audioPlayer.src = URL.createObjectURL(song);
+        audioPlayer.play();
+        highlightActiveSong();
+    }
+
+    // Resaltar la canción activa
+    function highlightActiveSong() {
+        const items = playlist.querySelectorAll('p');
+        items.forEach((item, index) => {
+            item.classList.remove('active');
+            if (index === currentSongIndex) {
+                item.classList.add('active');
+            }
+        });
+    }
+
+    // Reproducir siguiente canción automáticamente al finalizar
+    audioPlayer.addEventListener('ended', () => {
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        playSong(currentSongIndex);
+    });
+
+</script>
+
 </html>
